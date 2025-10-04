@@ -11,7 +11,10 @@ from deap.benchmarks.tools import hypervolume
 from warnings import warn
 
 from ._wrapper import GaussianProcessWrapper as GPR
+
 from ._NSGA2 import NSGAII
+from ._MOJADE import MOJADE
+
 from .metrics import GD, Spread2D, Coverage
 from ._target_space import TargetSpace
 from ._helpers import plot_1dgp
@@ -168,6 +171,7 @@ class MOBayesianOpt(object):
 
         if kernel is None:
             kernel = Matern(nu=1.5)
+            
 
         self.GP = [None] * self.NObj
         for i in range(self.NObj):
@@ -263,7 +267,8 @@ class MOBayesianOpt(object):
                  q=0.5,
                  n_pts=100,
                  SaveInterval=10,
-                 FrontSampling=[10, 25, 50, 100]):
+                 FrontSampling=[10, 25, 50, 100],
+                 Solver = 'NSGAII'):
         """
         maximize
 
@@ -295,6 +300,9 @@ class MOBayesianOpt(object):
 
         FrontSampling -- list of ints
              Number of points to sample the pareto front for metrics
+        
+        Solver -- "NSGAII" or "MOJADE"
+             Which DE Algorithm will be used to find the pareto front approximation.
 
         return front, pop
         =================
@@ -343,6 +351,9 @@ class MOBayesianOpt(object):
         if not isinstance(ReduceProb, bool):
             raise TypeError(f"ReduceProb should be bool, "
                             f"{type(ReduceProb)} instead")
+            
+        if Solver not in ["NSGAII", "MOJADE"]:
+            raise ValueError(f"Solver must be 'NSGAII' or 'MOJADE', got '{Solver}' instead")
 
         # Allocate necessary space
         if self.N_init_points+n_iter > self.space._n_alloc_rows:
@@ -362,8 +373,18 @@ class MOBayesianOpt(object):
             for i in range(self.NObj):
                 yy = self.space.f[:, i]
                 self.GP[i].fit(self.space.x, yy)
-
-            pop, logbook, front = NSGAII(self.NObj,
+            
+            
+            if Solver == "NSGAII":
+            
+                pop, logbook, front = NSGAII(self.NObj,
+                                         self.__ObjectiveGP,
+                                         self.pbounds,
+                                         MU=n_pts)
+                
+            elif Solver == "MOJADE":
+            
+                pop, logbook, front = NSGAII(self.NObj,
                                          self.__ObjectiveGP,
                                          self.pbounds,
                                          MU=n_pts)
