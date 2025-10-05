@@ -41,7 +41,7 @@ def MOJADE(NObj, objective, pbounds, seed=None, NGEN=100, MU=100, p=0.1, c=0.1, 
         creator.create("FitnessMin", base.Fitness, weights=(-1.0,)*NObj)
         creator.create("Individual", array.array, typecode='d', fitness=creator.FitnessMin)
         FirstCall = False
-
+    toolbox = base.Toolbox()
     toolbox.register("attr_float", uniform, pbounds)
     toolbox.register("individual",
                       tools.initIterate,
