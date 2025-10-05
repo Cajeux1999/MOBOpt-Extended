@@ -156,7 +156,7 @@ def MOJADE(NObj, objective, pbounds, seed=None, NGEN=100, MU=100, p=0.1, c=0.1, 
 
         record = stats.compile(pop)
         logbook.record(gen=g, evals=len(invalid_ind), **record)
-        print(logbook.stream)
+        #print(logbook.stream)
 
     front = np.array([ind.fitness.values for ind in pop])
     return pop, logbook, front
