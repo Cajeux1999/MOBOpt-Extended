@@ -384,7 +384,7 @@ class MOBayesianOpt(object):
                 
             elif Solver == "MOJADE":
             
-                pop, logbook, front = NSGAII(self.NObj,
+                pop, logbook, front = MOJADE(self.NObj,
                                          self.__ObjectiveGP,
                                          self.pbounds,
                                          MU=n_pts)
