@@ -41,7 +41,7 @@ class MOBayesianOpt(object):
 
     def __init__(self, target, NObj, pbounds, constraints=[],
                  verbose=False, Picture=False, TPF=None,
-                 n_restarts_optimizer=10, Filename=None,
+                 n_restarts_optimizer=100, Filename=None,
                  MetricsPS=True, max_or_min='max', RandomSeed=None,
                  kernel=None):
         """Bayesian optimization object
